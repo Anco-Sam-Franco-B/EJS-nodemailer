@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Send Email with Attachments</title>
+  <style>
+    .preview img, .preview video, .preview audio {
+      max-width: 200px;
+      margin: 10px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Send Email with Attachments</h1>
+  <form id="emailForm" action="/send" method="POST" enctype="multipart/form-data">
+    <label>Recipient Email:</label><br>
+    <input type="email" name="to" required><br><br>
+
+    <label>Subject:</label><br>
+    <input type="text" name="subject" required><br><br>
+
+    <label>Message:</label><br>
+    <textarea name="text" rows="4" cols="50"></textarea><br><br>
+
+    <label>Attachments:</label><br>
+    <input type="file" name="attachments" id="attachments" multiple><br><br>
+
+    <div class="preview" id="preview"></div>
+
+    <button type="submit">Send Email</button>
+  </form>
+
+  <script>
+    const attachmentsInput = document.getElementById("attachments");
+    const previewDiv = document.getElementById("preview");
+
+    attachmentsInput.addEventListener("change", () => {
+      previewDiv.innerHTML = ""; // clear previous preview
+
+      const files = attachmentsInput.files;
+      Array.from(files).forEach(file => {
+        const fileType = file.type;
+
+        if(fileType.startsWith("image/")) {
+          const img = document.createElement("img");
+          img.src = URL.createObjectURL(file);
+          previewDiv.appendChild(img);
+        }
+        else if(fileType.startsWith("video/")) {
+          const video = document.createElement("video");
+          video.src = URL.createObjectURL(file);
+          video.controls = true;
+          previewDiv.appendChild(video);
+        }
+        else if(fileType.startsWith("audio/")) {
+          const audio = document.createElement("audio");
+          audio.src = URL.createObjectURL(file);
+          audio.controls = true;
+          previewDiv.appendChild(audio);
+        }
+        else {
+          const p = document.createElement("p");
+          p.textContent = "File: " + file.name;
+          previewDiv.appendChild(p);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
